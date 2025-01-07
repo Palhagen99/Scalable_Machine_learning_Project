@@ -21,8 +21,11 @@ Forecasting of stock and index prices is crucial for investors, traders, and fin
 ### Architecture and dataset
 In order to make predictions on index and stock prices we utlize both historical price data and news sentiment analysis to train an LSTM. Relevant news data is collected by scraping the Google News RSS feed using keywords through the [pygooglenews](https://pypi.org/project/pygooglenews/) package. The news data is fed to [finbert](https://arxiv.org/pdf/1908.10063) which returns sentiment information about the data. Historical price data is collected using Yahoo! Finance' API through the [yfinance](https://pypi.org/project/yfinance/) package. We utilize [Hopsworks](https://www.hopsworks.ai) as a model and feature store which feed into our training pipeline.
 
+### Model
+We utilize a Long Short-Term Memory (LSTM) neural network to predict stock prices. The LSTM is trained using the Adam optimizer and Mean Squared Error loss function. The LSTM is trained on a sequence of historical price data and news sentiment data to predict future price movements. The finall model uses a sequence of 30 data points to predict the next 5 data points. 
+
 ## Limitations 
 Unfortanatly Googles RRS feed is limited to only include the latest year of news data. This means that we are limited to only using the latest year of news data for our predictions.
-As news articles for some companies are sparse, we implemented a news decay function to account for this. 
+As news articles for some companies are sparse, we implemented a news decay function to account for this. We also tried to pretrain the modell on more price data and later fine tune it on combined price and news data this however did not improve the model performance.
 
 ## How to run the code
