@@ -29,12 +29,13 @@ class DataLoader:
 
 
     def get_stock_data(self):
-        data = yf.download(self.ticker, period = self.time_period_stock)
+        data = yf.download(self.ticker , period = self.time_period_stock)
         df = pd.DataFrame()
         df['Open'] = data['Open']
         df['Close'] = data['Close']
         df['High'] = data['High']
         df['Low'] = data['Low']
+        df['Volume'] = data['Volume']
 
         return df
 
