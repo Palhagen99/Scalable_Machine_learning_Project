@@ -107,7 +107,7 @@ class DataLoader:
         #We want to start from the oldest date and work our way to the newest date
         for i in range(1, len(combined_data)):
             for column in news_columns:
-                if combined_data[column][i] == 0:
+                if combined_data[column][i] == 0 and combined_data[column][i-1] != 0:
                     combined_data[column][i] = combined_data[column][i-1] * decay_rate
         return combined_data
 
