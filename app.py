@@ -1,33 +1,68 @@
 import gradio as gr
-from transformers import pipeline
-import yfinance as yf
 import matplotlib.pyplot as plt
-#from transformers import AutoTokenizer, TFAutoModelForSequenceClassification
+import numpy as np
+import hopsworks
+from tensorflow.keras.models import load_model
+from DataLoader import DataLoader
+from sklearn.preprocessing import MinMaxScaler
 
-# Function to generate a sine wave plot
 def predict(index_name="^OMX"):
-    index = yf.Ticker(index_name)
-    index_data = index.history(period="3mo")
-    index_data = index_data.reset_index()
-    index_close_price_list = index_data.tail(30)["Close"].to_list()
+    # Load the model
+    project = hopsworks.login(api_key_value="pwWjyzF8SYsYJGQp.uZRknwAGCDPMe2covG1e4uVY4LsJXhAyKYgUNADOGY3H67mRAzoBtEJGlskTWE8h")
+    mr = project.get_model_registry()
+    model = mr.get_model("FinanceModel", version=10)
+    saved_model_dir = model.download()
+    print(saved_model_dir)
+    model = load_model(saved_model_dir + "/model.keras")
     
-    # Sentiment analysis using finbert
-    news_data = "PLACEHOLDER"
-    pipe = pipeline("sentiment-analysis", model="ProsusAI/finbert")
-    sentiment_score = pipe(news_data, top_k=None)
+    #Fetch the data used to train the model
+    time_period_news = '30d'
+    time_period_price = '3mo' #Needed to make sure we get 30 days of price data. Stock markets are closed on weekends and holidays
+    data_loader = DataLoader(index_name, time_period_news, time_period_price)
+    data = data_loader.get_data()
 
-    # Test random predicted value
-    predicted_value = index_close_price_list[-1] + 10
+    #Get the previous closing price
+    previous_closing_price = data['Close'].values
+    #Remove uneccessary data and scale the data
+    #The modell only takes the latest 30 days of data
+    data = data[-30:]
+
+    #Load the input and output scalers used to train the model
+    input_scaler = MinMaxScaler()
+    output_scaler = MinMaxScaler()
+
+    #Create a fake output data to fit the scaler
+    output_scaler.fit_transform(previous_closing_price.reshape(-1, 1))
+
+    #Scale the data
+    data = input_scaler.fit_transform(data)
+
+    #Format the data to be used by the model. The model expects the data to be in the shape (1, 30, 7)
+    data = data.reshape(1, 30, 7)
+    prediction = model.predict(data)
+
+    #Inverse the scaling
+    prediction = output_scaler.inverse_transform(prediction)[0]
 
     # Create the plot
     fig, ax = plt.subplots(figsize=(8, 4))
-    ax.plot(range(len(index_close_price_list)), index_close_price_list, label="True Values", color="blue")
-    ax.scatter(len(index_close_price_list), predicted_value, color="red", label="Predicted Value")
-    ax.axvline(len(index_close_price_list) - 1, linestyle="--", color="gray", alpha=0.6)
+    ax.plot(range(len(previous_closing_price)), previous_closing_price, label="True Values", color="blue")
+    predicted_indices = np.arange(len(previous_closing_price), len(previous_closing_price) + len(prediction))
+    ax.scatter(predicted_indices, prediction, color="red", label="Predicted Value")
+    ax.axvline(len(previous_closing_price) - 1, linestyle="--", color="gray", alpha=0.6)
     ax.set_title(f"Prediction for {index_name}")
     ax.set_xlabel("Time")
     ax.set_ylabel("Index Value")
     ax.legend()
+
+    """ fig, ax = plt.subplots(figsize=(8, 4))
+    ax.plot(previous_closing_price, label='Previous Closing Prices', linestyle='--',)
+
+    # Create an array of indices for the predicted values, right after the last index of prev_closing
+    predicted_indices = np.arange(len(previous_closing_price), len(previous_closing_price) + len(prediction))
+
+    # Plot the predicted closing prices in red, using the correct indices
+    ax.plot(predicted_indices, prediction, color='red', label='Predicted Prices',linestyle='--',) """
     
     return fig
 
