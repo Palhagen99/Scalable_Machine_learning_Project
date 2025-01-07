@@ -39,15 +39,14 @@ name_to_ticker = {
 
 def predict(stock_name):
     ticker = name_to_ticker[stock_name]
-    print(f"TICKER VALUE: {ticker}")
+
     # Load the model
     project = hopsworks.login(
-        api_key_value="pwWjyzF8SYsYJGQp.uZRknwAGCDPMe2covG1e4uVY4LsJXhAyKYgUNADOGY3H67mRAzoBtEJGlskTWE8h"
+        api_key_value="<HOPSWORKS_API_KEY>",
     )
     mr = project.get_model_registry()
     model = mr.get_model("FinanceModel", version=11)
     saved_model_dir = model.download()
-    print(saved_model_dir)
     model = load_model(saved_model_dir + "/model.keras")
 
     # Fetch the data used to train the model
@@ -109,9 +108,9 @@ interface = gr.Interface(
         choices=list(name_to_ticker.keys()),
         value="ABB.ST",  # Default value
     ),
-    outputs=gr.Plot(label="Index Prediction Plot"),
-    title="Financial Index Predictor",
-    description="Enter the name of a financial index to generate a plot showing true values for the past 30 days and the predicted value.",
+    outputs=gr.Plot(label="Stock Prediction Plot"),
+    title="Stock Predictor",
+    description="Enter the name of a stock to generate a plot showing true values for the past 60 days and the predicted values for the next 5 days.",
 )
 
 # Launch the app
