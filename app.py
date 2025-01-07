@@ -43,6 +43,7 @@ def predict(stock_name):
     # Load the model
     project = hopsworks.login(
         api_key_value="<HOPSWORKS_API_KEY>",
+        #api_key_value=os.environ['Hopsworks_API_Key'] # For running on Huggingface spaces
     )
     mr = project.get_model_registry()
     model = mr.get_model("FinanceModel", version=11)
