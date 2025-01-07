@@ -41,23 +41,19 @@ def forecast_stock_price(ticker):
     data = data[-30:]
 
 
-
-    #Load the input and output scalers used to train the model
     input_scaler = MinMaxScaler()
     output_scaler = MinMaxScaler()
 
-    #Create a fake output data to fit the scaler
+    #Use latest 30 days to create a scaler for the input data wich will be used to invert the scaling of the output
     output_scaler.fit_transform(previous_closing_price.reshape(-1, 1))
 
     #Scale the data
     data = input_scaler.fit_transform(data)
 
-    #Format the data to be used by the model. The model expects the data to be in the shape (1, 30, 7)
-    data = data.reshape(1, 30, 7)
+    #Format the data to be used by the model. The model expects the data to be in the shape (1, 30, 8)
+    data = data.reshape(1, 30, 8)
 
     prediction = model.predict(data)
-
-
 
 
     #Inverse the scaling
