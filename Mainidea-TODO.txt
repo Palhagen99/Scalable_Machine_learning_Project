@@ -1,9 +1,0 @@
-Tankar:
-
-Vi har nu vi yfinance möjlighet till att hämta historisk data för en aktie.
-Kul hade varit att använda Finbert för att få en sentimentanalys på nyheter om aktien.
-Kanske även använda Finbert för att göra en sentimentanalys på twitter om aktien.
-
-Vi kan sen träna en modell som tar in sentimentanalysen och historisk data för att försöka förutsäga aktiens pris. Genom att förutspå low och high för nästa dag.
-Så vi använder finbert enbart för att få postive, negative, neutral sentiment.
-Och sedan har vi en RNN som tar in sentiment och historisk data för att förutsäga low och high för nästa dag.
