@@ -1,5 +1,7 @@
-# ID2223 "Project name"
+# ID2223 Project: Stock price prediction
 This repository contains our final project of ID2223 2024/2025 at KTH.
+
+Link to the [app](https://huggingface.co/spaces/halme/Stock_Price_Forecaster_ID2223) on huggingface
 
 ## Authors
 Erik Halme (ehalme@kth.se) \
