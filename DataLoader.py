@@ -1,11 +1,7 @@
 #Class to fetch news and stock data from the web for a specific ticker and combine them into a dataframe.
 
 import pandas as pd
-import numpy as np
-import requests
-import matplotlib.pyplot as plt
 import yfinance as yf
-from datetime import datetime
 from pygooglenews import GoogleNews
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from transformers import pipeline
