@@ -1,9 +1,10 @@
+import os
 import gradio as gr
 import matplotlib.pyplot as plt
 import numpy as np
 import hopsworks
 from tensorflow.keras.models import load_model
-from DataLoader import DataLoader
+from inference_data_pipeline import InferenceDataPipeline
 from sklearn.preprocessing import MinMaxScaler
 
 name_to_ticker = {
@@ -42,7 +43,7 @@ def predict(stock_name):
 
     # Load the model
     project = hopsworks.login(
-        api_key_value="<HOPSWORKS_API_KEY>",
+        api_key_value="<HOPSWORKS_API_KEY>"  # For running locally,
         #api_key_value=os.environ['Hopsworks_API_Key'] # For running on Huggingface spaces
     )
     mr = project.get_model_registry()
@@ -53,7 +54,7 @@ def predict(stock_name):
     # Fetch the data used to train the model
     time_period_news = "30d"
     time_period_price = "3mo"  # Needed to make sure we get 30 days of price data. Stock markets are closed on weekends and holidays
-    data_loader = DataLoader(ticker, time_period_news, time_period_price)
+    data_loader = InferenceDataPipeline(ticker, time_period_news, time_period_price)
     data = data_loader.get_data()
 
     # Get the previous closing price
