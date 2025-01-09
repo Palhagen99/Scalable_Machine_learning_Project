@@ -28,7 +28,7 @@ We utilize a Long Short-Term Memory (LSTM) neural network to predict stock price
 
 ## Limitations 
 Unfortanatly Googles RRS feed is limited to only include the latest year of news data. This means that we are limited to only using the latest year of news data for our predictions.
-As news articles for some companies are sparse, we implemented a news decay function to account for this. We also tried to pretrain the modell on more price data and later fine tune it on combined price and news data this however did not improve the model performance.
+We also tried to pretrain the modell on more price data and later fine tune it on combined price and news data this however did not improve the model performance.
 
 ## How to run the code
 1. Clone the repository

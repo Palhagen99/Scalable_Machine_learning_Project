@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import hopsworks
 from tensorflow.keras.models import load_model
-from DataLoader import DataLoader
+from inference_data_pipeline import InferenceDataPipeline
 from sklearn.preprocessing import MinMaxScaler
 
 name_to_ticker = {
@@ -42,7 +42,7 @@ def predict(stock_name):
 
     # Load the model
     project = hopsworks.login(
-        api_key_value="<HOPSWORKS_API_KEY>",
+        api_key_value="<HOPSWORKS_API_KEY>"  # For running locally,
         #api_key_value=os.environ['Hopsworks_API_Key'] # For running on Huggingface spaces
     )
     mr = project.get_model_registry()
