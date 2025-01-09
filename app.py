@@ -54,7 +54,7 @@ def predict(stock_name):
     # Fetch the data used to train the model
     time_period_news = "30d"
     time_period_price = "3mo"  # Needed to make sure we get 30 days of price data. Stock markets are closed on weekends and holidays
-    data_loader = DataLoader(ticker, time_period_news, time_period_price)
+    data_loader = InferenceDataPipeline(ticker, time_period_news, time_period_price)
     data = data_loader.get_data()
 
     # Get the previous closing price
